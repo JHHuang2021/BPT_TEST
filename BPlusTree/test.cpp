@@ -1,9 +1,4 @@
-#include <cstdio>
-#include <iostream>
-#include <vector>
-
-#include "bpt.hpp"
-
+#include "include/b_plus_tree.hpp"
 struct node {
     char key[64];
     int value;
@@ -31,10 +26,12 @@ struct node {
             return strcmp(key, rhs.key) <= 0;
     }
 };
-
 #define INT_MAX (1 << 31) - 1
 #define INT_MIN 1 << 31
-huang::BPlusTree<node, int> bpt("test");
+huang::DiskManager dm("test_disk_manager");
+huang::Replacer<huang::Page*> rep;
+huang::BufferPoolManager bpm(512, &dm, &rep);
+huang::BPlusTree<node, int> bpt(&bpm);
 int main() {
     // freopen("test0.in", "r", stdin);
     // freopen("test.out", "w", stdout);
