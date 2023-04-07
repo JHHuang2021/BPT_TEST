@@ -1,4 +1,4 @@
-#include "include/b_plus_tree.hpp"
+#include "bpt.hpp"
 struct node {
     char key[64];
     int value;
@@ -28,10 +28,7 @@ struct node {
 };
 #define INT_MAX (1 << 31) - 1
 #define INT_MIN 1 << 31
-huang::DiskManager dm("test_disk_manager");
-huang::Replacer<huang::Page*> rep;
-huang::BufferPoolManager bpm(512, &dm, &rep);
-huang::BPlusTree<node, int> bpt(&bpm);
+huang::BPlusTree<node, int> bpt("test");
 int main() {
     // freopen("test0.in", "r", stdin);
     // freopen("test.out", "w", stdout);
