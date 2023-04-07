@@ -4,72 +4,66 @@
 
 #include "bpt.hpp"
 
-struct String {
-    char index[65];
-
-    String(const String &other) {
-        for (int i = 0; i < 65; i++) index[i] = other.index[i];
+struct node {
+    char key[64];
+    int value;
+    node() {}
+    node(const char* ch, int value) {
+        strcpy(key, ch);
+        this->value = value;
     }
-
-    String() = default;
-
-    friend bool operator>(const String &lhs, const String &rhs) {
-        return std::string(lhs.index) > std::string(rhs.index);
+    bool operator==(const node& rhs) const {
+        if (strcmp(key, rhs.key) != 0 || value != rhs.value)
+            return false;
+        else
+            return true;
     }
-
-    friend bool operator>=(const String &lhs, const String &rhs) {
-        return std::string(lhs.index) >= std::string(rhs.index);
+    bool operator<(const node& rhs) const {
+        if (strcmp(key, rhs.key) == 0)
+            return value < rhs.value;
+        else
+            return strcmp(key, rhs.key) < 0;
     }
-
-    friend bool operator<(const String &lhs, const String &rhs) {
-        return std::string(lhs.index) < std::string(rhs.index);
-    }
-
-    friend bool operator<=(const String &lhs, const String &rhs) {
-        return std::string(lhs.index) <= std::string(rhs.index);
-    }
-
-    friend bool operator==(const String &lhs, const String &rhs) {
-        return std::string(lhs.index) == std::string(rhs.index);
-    }
-
-    friend bool operator!=(const String &lhs, const String &rhs) {
-        return std::string(lhs.index) != std::string(rhs.index);
-    }
-
-    friend std::ostream &operator<<(std::ostream &os, const String &obj) {
-        os << obj.index;
-        return os;
+    bool operator<=(const node& rhs) const {
+        if (strcmp(key, rhs.key) == 0)
+            return value <= rhs.value;
+        else
+            return strcmp(key, rhs.key) <= 0;
     }
 };
 
+#define INT_MAX (1 << 31) - 1
+#define INT_MIN 1 << 31
+huang::BPlusTree<node, int> bpt("test");
 int main() {
-    //  freopen("5.in", "r", stdin);
-    //   freopen("me.out", "w", stdout);
-    huang::BPlusTree<String, int> bpTree("test");
-    std::pair<String, int> val;
-    int cnt;
-    char cmd[10];
-    int data;
-    scanf("%d", &cnt);
-    for (int i = 1; i <= cnt; i++) {
-        scanf("%s", cmd);
-        if (cmd[0] == 'i') {
-            scanf("%s%d", val.first.index, &val.second);
-            bpTree.Insert(val.first, val.second);
-        } else if (cmd[0] == 'f') {
-            scanf("%s", val.first.index);
+    // freopen("test0.in", "r", stdin);
+    // freopen("test.out", "w", stdout);
+    int n;
+    char ch[64];
+    std::cin >> n;
+    for (int i = 1; i <= n; i++) {
+        // std::cout << "Case :" << i << std::endl;
+        // bpt.Debug();
+        // std::cout << std::endl;
+        std::string op;
+        node n;
+        std::cin >> op;
+        if (op == "insert") {
+            std::cin >> n.key >> n.value;
+            bpt.Insert(n, n.value);
+        } else if (op == "delete") {
+            std::cin >> n.key >> n.value;
+            bpt.Remove(n);
+        } else if (op == "find") {
             std::vector<int> ans;
-            bpTree.GetValue(val.first, val.first, &ans);
-            if (!ans.empty()) {
-                for (int i = 0; i < ans.size() - 1; i++) printf("%d ", ans[i]);
-                printf("%d\n", ans[ans.size() - 1]);
-            } else
-                puts("null");
-
-        } else if (cmd[0] == 'd') {
-            scanf("%s%d", val.first.index, &val.second);
-            bpTree.Remove(val.first);
+            std::cin >> ch;
+            bpt.GetValue({ch, INT_MIN}, {ch, INT_MAX}, &ans);
+            if (ans.empty())
+                std::cout << "null" << std::endl;
+            else {
+                for (auto i : ans) std::cout << i << " ";
+                std::cout << std::endl;
+            }
         }
     }
     return 0;
